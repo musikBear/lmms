@@ -63,12 +63,9 @@
 #include "TextFloat.h"
 #include "TimeLineWidget.h"
 #include "StepRecorderWidget.h"
-
 //for random
 #include <time.h>
-//for debug
-#include <QtTest/QTest>
-#include <QDebug>
+
 
 using std::move;
 
@@ -1412,10 +1409,8 @@ void PianoRoll::keyPressEvent(QKeyEvent* ke)
             NoteVector notes = getSelectedNotes();//selected notes only
                 for( Note* n : notes ) //for each selected
                 {
-                    n->setLength( n->length() + 1 );
-                    qDebug() << "Inside for  " << n->length();    
-                }
-		    qDebug() << "Plus key blev trykket "; 				
+                    n->setLength( n->length() + 1 ); 
+                }		     				
             ke->accept();
             m_pattern->updateLength();	
 			}	
@@ -1432,16 +1427,12 @@ void PianoRoll::keyPressEvent(QKeyEvent* ke)
             NoteVector notes = getSelectedNotes();//selected notes only
                 for( Note* n : notes ) //for each selected
                 {
-                    n->setLength( n->length() - 1 );
-                    //if( n->length()<=1 ) n->length() = 1; //1/192 must be smallest note kept
-                    qDebug() << "Inside for  " << n->length();    
-                }
-		    qDebug() << "Minus key blev trykket "; 				
+                    n->setLength( n->length() - 1 );                    
+                }		    				
             ke->accept();
             m_pattern->updateLength();	
 			}	
-			break;      
-
+			break; 
 		default:
 			break;
 	}
@@ -3805,8 +3796,6 @@ void PianoRoll::recordAccompany()
 
 	m_pattern->addJournalCheckPoint();
 	m_recording = true;
-    qDebug() << "er denne funktion; "<< m_recording;
-
 	if( m_pattern->getTrack()->trackContainer() == Engine::getSong() )
 	{
 		
@@ -4358,7 +4347,7 @@ int PianoRoll::quantization() const
 	return DefaultTicksPerBar / text.right( text.length() - 2 ).toInt();
 }
 
-//anj
+
 void PianoRoll::humanizeNotesVel() //velocity version
 {
     //The method will humanize velosities of a selection of notes
@@ -4383,7 +4372,6 @@ void PianoRoll::humanizeNotesVel() //velocity version
         if ( signer < 50 ) n->setVolume( n->getVolume()+rr );  
         else n->setVolume( n->getVolume()-rr );          
     }
-
     update();//Project is changed. Update
     gui->songEditor()->update();
     Engine::getSong()->setModified();
@@ -4400,8 +4388,7 @@ void PianoRoll::humanizeNotesLen() //length ver.
     int lower = 1;//Humanize/span is 1..4 1/192 in size
     int upper = 4;
     int subt = 1; //shift between adding and subtracting position
-    int adder = 100; 
-  
+    int adder = 100;   
     // Use current time as seed for random generator
     srand(time(0)); 
     m_pattern->addJournalCheckPoint();
@@ -4422,14 +4409,14 @@ void PianoRoll::humanizeNotesLen() //length ver.
 }
 
 
-int returnStrum(int st)//input > read value from comboBox Q. Output size of strum
+int returnStrum(int st)//input : read value from comboBox Q. Output : size of strum
 {
 int strumSize = 0;
 
     switch (st)
 	{
     
-//------sys-notes------------
+    //------sys-notes------------
 		case 1:
         strumSize = 196;//Wholenote			
 			break;
@@ -4451,7 +4438,7 @@ int strumSize = 0;
         case 7:
         strumSize = 3;	//1/64		
 			break;
-//---------triplets------------
+    //---------triplets------------
         case 8:
         strumSize = 64;	//1/2		
 			break;
@@ -4472,19 +4459,12 @@ int strumSize = 0;
 			break;
     }
     return strumSize; 
-
 }
-
-
-
 
 
 void PianoRoll::strumNotesUp() //top/|down
 //Method for chord-strumming.
 //The strum-distance is the chosen Q-value
-//Left-click strums from bottom to top
-//Right-click from top to buttom
-
 {
   if( ! hasValidPattern() )
     {
@@ -4500,8 +4480,7 @@ void PianoRoll::strumNotesUp() //top/|down
                                        //to real piano/roll values 
   int strumSz = returnStrum(index); //size of note movement;
   int strum = strumSz;//keep orr. value of selected strumming
-  bool firstDone = false;//first note should not be moved
- 
+  bool firstDone = false;//first note should not be moved 
   for( Note* n : notes ) //for each selected
   {
   if( firstDone ){
@@ -4509,9 +4488,7 @@ void PianoRoll::strumNotesUp() //top/|down
     strumSz += strum;
     if (index >= notesInChord) continue;}  
   firstDone = true;
-  }
-    
-    qDebug() << "notes UP" << notes.count(); 
+  }    
     m_pattern->rearrangeAllNotes();
 	m_pattern->updateLength();
 	m_pattern->dataChanged();
@@ -4524,9 +4501,6 @@ void PianoRoll::strumNotesUp() //top/|down
 void PianoRoll::strumNotesDn() //down-top
 //Method for chord-strumming.
 //The strum-distance is the chosen Q-value
-//Left-click strums from bottom to top
-//Right-click from top to buttom
-
 {
   if( ! hasValidPattern() )
   {
@@ -4540,9 +4514,7 @@ void PianoRoll::strumNotesDn() //down-top
   index = m_quantizeModel.value(); //uses UserSet Q-Value in combobox
                                        //This value is position, so it need to be qualified
                                        //to real piano/roll values
-
-  int strumSz = returnStrum(index); //size of note movement
-  
+  int strumSz = returnStrum(index); //size of note movement  
   int strum = strumSz;//keep orr. value of selected strumming
   bool firstDone = false;//first note should not be moved
   for( Note* n : notes ) //for each selected
@@ -4555,12 +4527,10 @@ void PianoRoll::strumNotesDn() //down-top
     }
     firstDone = true;
         if (notesInChord<=1) continue;       
-  }    
-    qDebug() << "Q kombo DOWN" << m_quantizeModel.value(); 
-
-	m_pattern->rearrangeAllNotes();
-	m_pattern->updateLength();
-	m_pattern->dataChanged();
+  }  
+    m_pattern->rearrangeAllNotes();
+    m_pattern->updateLength();
+    m_pattern->dataChanged();
     update();//Project is changed. Update
     gui->songEditor()->update();
     Engine::getSong()->setModified();

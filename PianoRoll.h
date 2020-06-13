@@ -220,7 +220,6 @@ protected slots:
 	void quantizeChanged();
 	void noteLengthChanged();
 	void quantizeNotes();
-
     void humanizeNotesVel();
     void humanizeNotesLen();
     void strumNotesUp();
