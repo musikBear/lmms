@@ -1,4 +1,4 @@
-This project uses git submodules and several are required for a successful
+uses git submodules and several are required for a successful
 build.  If this tarball was NOT provided with submodules (default), some source
 dependencies will need to be manually added to src/3rdparty.
 
