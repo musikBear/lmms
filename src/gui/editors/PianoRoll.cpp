@@ -1500,7 +1500,7 @@ void PianoRoll::keyPressEvent(QKeyEvent* ke)
 			// in Knife mode, but unquantize it
 			if (m_editMode == EditMode::Knife)
 			{
-				break;
+			break;
 			}
 			// Enter selection mode if:
 			// -> this window is active
@@ -1514,6 +1514,41 @@ void PianoRoll::keyPressEvent(QKeyEvent* ke)
 				ke->accept();
 			}
 			break;
+		case Qt::Key_Plus: 
+            if(!  hasValidMidiClip())
+            {
+            return;
+            }
+            else
+            {
+            m_midiClip->addJournalCheckPoint();
+            NoteVector notes = getSelectedNotes();//selected notes only
+                for(Note* n : notes) //for each selected
+                {
+                    n->setLength( n->length() + 1 );    
+                }
+            ke->accept();
+            m_midiClip->updateLength();
+			}
+			break;
+        case Qt::Key_Minus:
+            if(! hasValidMidiClip())
+            {
+            return;
+            }
+            else
+            {
+            m_midiClip->addJournalCheckPoint();
+            NoteVector notes = getSelectedNotes();//selected notes only
+                for(Note* n : notes) //for each selected
+                {
+                    if(! n->length()<= 1) n->setLength(n->length() - 1);                  
+                    //1/192 must be smallest note     
+                }
+            ke->accept();
+            m_midiClip->updateLength();
+			}
+			break; 
 		default:
 			ke->ignore();
 			break;
